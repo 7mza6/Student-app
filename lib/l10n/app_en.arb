@@ -168,6 +168,9 @@
   "welcomeback": "Welcome Back",
   "@welcomeback": {
     "description": "Welcome Back Massage"
+  },
+  "kCoursesLabel": "Courses",
+  "@kSettingsLabel": {
+    "description": "Label for the Courses item"
   }
- 
 }

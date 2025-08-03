@@ -1,8 +1,12 @@
 
 
 import 'package:flutter/material.dart';
-import 'constants.dart';
+import '../Viewmodels/Courses-Model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../Viewmodels/notification-viewModel.dart';
+import '../auth/models/userModel.dart';
+import 'Courses.dart';
 
 
 PreferredSizeWidget AppHeader(BuildContext context) {
@@ -12,8 +16,11 @@ PreferredSizeWidget AppHeader(BuildContext context) {
     actions: [
       IconButton(
         icon: const Icon(Icons.notifications),
-        onPressed: () {
-          // Do something when the notifications icon is pressed
+        onPressed: () async {
+         //await insertTestData();
+
+          //insertTestNotifications(CurrentUser.getcurrentUser()?.id.toString()??'15');
+
         },
       ),
     ],

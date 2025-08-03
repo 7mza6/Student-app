@@ -32,5 +32,6 @@
   "kSelectAccountLabel": "اختر حسابك",
   "kBiometricAuthPrompt": "استخدم المصادقة البيومترية لتسجيل الدخول",
   "kBiometricReason": "يرجى المصادقة للمتابعة",
-  "welcomeback": "مرحبًا مرة أخرى"
+  "welcomeback": "مرحبًا مرة أخرى",
+  "kCoursesLabel": "المساقات"
 }

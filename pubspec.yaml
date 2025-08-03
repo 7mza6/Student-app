@@ -50,6 +50,7 @@ dependencies:
   font_awesome_flutter: ^10.4.0
   flex_color_scheme: ^7.0.5
   url_launcher: ^6.1.11
+  firebase_messaging: ^14.7.10
 
 dev_dependencies:
   flutter_test:

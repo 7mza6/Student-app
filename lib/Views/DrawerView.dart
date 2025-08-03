@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:users/Viewmodels/notification-viewModel.dart';
 import 'package:users/Views/theam.dart';
 import 'package:users/auth/models/userModel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../auth/Views/LoginPage.dart';
 import '../main.dart';
 import 'constants.dart';
+import 'notification_body.dart';
+import 'main-view.dart';
 
 class DrawerView extends StatefulWidget {
   DrawerView({super.key});
@@ -114,7 +118,9 @@ class _DrawerViewState extends State<DrawerView> {
         child: const Text('5', style: kNotificationCountTextStyle), // Used constant
       ),
       onTap: () {
-        Navigator.pushNamed(context, kNotificationsRoute); // Used constant
+        setState(() {
+          mainView.of(context)?.setBody(NotificationBody());
+        }); // Used constant
       },
     );
   }
@@ -142,7 +148,8 @@ class _DrawerViewState extends State<DrawerView> {
       leading: const Icon(Icons.logout, color: kErrorColor), // Used constant
       title:  Text(AppLocalizations.of(context)!.kLogoutLabel, style: kLogoutTextStyle), // Used constant
       onTap: () {
-        Navigator.pushNamed(context, kLoginRoute); // Used constant
+        MyApp.of(context)?.setThemeMode(ThemeMode.light);
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoginPage()));// Used constant
       },
     );
   }

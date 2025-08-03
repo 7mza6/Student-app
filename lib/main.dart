@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:users/Views/main-view.dart';
+import 'package:users/Views/main-view.dart';import 'Repositories/notification_api.dart';
+
 import 'Views/AboutPage.dart';
 import 'Views/constants.dart';
 import 'Views/homePage.dart';
@@ -23,6 +24,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await NotificationApi().initNotifications();
+
   runApp(MyApp());
 }
 

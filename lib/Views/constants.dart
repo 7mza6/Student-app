@@ -7,7 +7,8 @@ import 'package:users/main.dart';
 const kPrimaryColor = Color(0xFF3F99F6);
 const kSecondaryColor = Color(0xFF1976D2);
 const kAccentColor = Colors.blueAccent;
-const kLightBackgroundColor = Color(0xFFCBE4FE);
+//const kLightBackgroundColor = Color(0xFFCBE4FE);
+const kLightBackgroundColor = Colors.white;
 const kDarkBackgroundColor = Color(0xFF121212);
 const kDarkSurfaceColor = Color(0xFF1E1E1E);
 const kUserInfoCardColor = Color(0xFFF1F4FD);
@@ -102,6 +103,18 @@ const kBackgroundImage = "images/background.png";
 
 
 // ===== DIMENSIONS & SPACING =====
+//shadow
+
+ List<BoxShadow>? kCardShadow(context) {return[
+   BoxShadow(
+     color: Theme.of(context).shadowColor.withOpacity(0.4),
+     blurRadius: 10,
+     offset: Offset(0, 5),
+   ),
+ ] ;}
+
+
+
 // Padding
 const kDialogPadding = EdgeInsets.all(8.0);
 const kSheetPadding = EdgeInsets.all(10.0);

@@ -23,6 +23,9 @@ final lightTheme = ThemeData(
     surface: Colors.white,
     shadow: Color.fromARGB(125, 158, 158, 158),
   ),
+  cardTheme: CardTheme(
+    color: Color(0xFFF4F9FF),
+  ),
   appBarTheme: const AppBarTheme(
     backgroundColor: Color(0xFF3F99F6),
     foregroundColor: Colors.white,
@@ -39,6 +42,8 @@ final darkTheme = ThemeData(
     surface: kDarkSurfaceColor,
     shadow: Colors.white,
   ),
+
+
   scaffoldBackgroundColor: kDarkBackgroundColor,
   appBarTheme: const AppBarTheme(
     backgroundColor: kPrimaryColor,

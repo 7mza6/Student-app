@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:users/Views/test.dart';
+import '../Viewmodels/Courses-Model.dart';
 import 'AboutPage.dart';
+import 'Courses.dart';
 import 'constants.dart';
 import 'homePage.dart';
 import 'main-view.dart';
@@ -40,8 +43,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           label: AppLocalizations.of(context)!.kAboutLabel,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: AppLocalizations.of(context)!.kSettingsLabel,
+          icon: Icon(FontAwesomeIcons.book),
+          label: AppLocalizations.of(context)!.kCoursesLabel,
         ),
       ],
       onTap: (index) {
@@ -59,7 +62,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         } else if (index == 2) {
           selectedIndex = 2;
           setState(() {
-            setBody(testPage());
+            setBody(Courses());
           });
         }
       },

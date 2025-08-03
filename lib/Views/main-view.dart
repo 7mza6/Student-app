@@ -8,8 +8,11 @@ import 'homePage.dart';
 import 'AppHeader.dart';
 
 class mainView extends StatefulWidget {
-   Widget? body;
-  mainView({this.body});
+  Widget? body;
+   mainView({super.key,this.body});
+
+   static _mainViewState? of(BuildContext context) =>
+       context.findAncestorStateOfType<_mainViewState>();
   @override
   State<mainView> createState() => _mainViewState();  
 }
