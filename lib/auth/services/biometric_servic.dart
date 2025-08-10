@@ -50,7 +50,6 @@ storeUser(user _user) async {
   }else
   userPasswords = Map<String, String>.from(jsonDecode(jsonData));
 
-  // Add the new user credentials
   userPasswords[_user.username!] = _user.password!;
   
   jsonData = jsonEncode(userPasswords);

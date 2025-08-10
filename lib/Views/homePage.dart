@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:users/Views/all_tasks_page.dart';
 import 'package:users/Views/constants.dart';
+import 'package:users/Views/submissions_view_body.dart';
 import 'package:users/Views/theam.dart';
 
+import '../Models/dashboard_stats_model.dart';
+import '../Models/upcoming_event_model.dart';
+import '../Viewmodels/homePage_view_model.dart';
 import '../auth/models/userModel.dart';
 import 'GridCards.dart';
 import 'Responsive.dart';
+import 'course_enrollment_page.dart';
+import 'graded_work_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,7 +36,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: kAllPadding8,
               child: Text(
-                'Hello, ${CurrentUser.getcurrentUser()?.username}',
+                'Hello, ${CurrentUser.getcurrentUser()?.fullName}',
                 style: kSheetTitleStyle,
               ),
             ),
@@ -75,112 +83,88 @@ class _HomePageState extends State<HomePage> {
 
 
 
-class UpcomingEventsGrid extends StatelessWidget {
-  const UpcomingEventsGrid({super.key});
+class ProgressCards extends StatefulWidget {
+  const ProgressCards({super.key});
+
+  @override
+  State<ProgressCards> createState() => _ProgressCardsState();
+}
+
+class _ProgressCardsState extends State<ProgressCards> {
+  late Future<DashboardStatsViewModel> _statsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _statsFuture = fetchDashboardStats();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GridCards(
-      mobileCount: 1,
-      nonMobileCount: 2,
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        switch (index) {
-          case 0:
-            return UpcomingEventCard(
-              day: '15',
-              month: 'Oct',
-              title: 'Physics Lecture',
-              time: '10:00 AM - 11:30 AM',
-              location: 'Online - Zoom',
-              backgroundColor: const Color(0xFFFEE6E2),
-              textColor: const Color(0xFFD95B4A),
-            );
-          case 1:
-            return UpcomingEventCard(
-              day: '20',
-              month: 'Oct',
-              title: 'Chemistry Lab',
-              time: '2:00 PM - 4:00 PM',
-              location: 'Lab Room 204',
-              backgroundColor: const Color(0xFFE0F7FA),
-              textColor: const Color(0xFF00796B),
-            );
-          case 2:
-            return UpcomingEventCard(
-              day: '22',
-              month: 'Oct',
-              title: 'Math Workshop',
-              time: '1:00 PM - 2:30 PM',
-              location: 'Main Hall',
-              backgroundColor: const Color(0xFFE8F5E9),
-              textColor: const Color(0xFF388E3C),
-            );
-          default:
-            return const SizedBox.shrink();
+    return FutureBuilder<DashboardStatsViewModel>(
+      future: _statsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
         }
+        if (snapshot.hasError) {
+          return const Center(child: Text("Failed to load dashboard data."));
+        }
+        if (!snapshot.hasData) {
+          return const Center(child: Text("No data available."));
+        }
+
+        final stats = snapshot.data!;
+
+        return GridCards(
+          itemCount: 4,
+          mobileCount: 2,
+          nonMobileCount: 4,
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return card(
+                  title: 'Courses Enrolled',
+                  icon: FontAwesomeIcons.book,
+                  data: Text(stats.coursesEnrolledCount.toString(), style: kCardDataStyle),
+                );
+              case 1:
+                return card(
+                  title: 'Pending Assignments',
+                  icon: FontAwesomeIcons.listCheck,
+                  data: Text(stats.pendingAssignmentsCount.toString(), style: kCardDataStyle),
+                );
+              case 2:
+                final quizDateText = stats.nextUpcomingQuizDate != null
+                    ? DateFormat('MMM d').format(stats.nextUpcomingQuizDate!)
+                    : "None";
+                return card(
+                  title: 'Upcoming Quizzes',
+                  icon: FontAwesomeIcons.calendarDay,
+                  data: Text(quizDateText, style: kCardDataStyle),
+                );
+              case 3:
+                final progressText = "${(stats.overallProgress * 100).toStringAsFixed(0)}%";
+                return card(
+                  title: 'Overall Progress',
+                  icon: FontAwesomeIcons.chartLine,
+                  data: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(progressText, style: kCardDataStyle),
+                      Text('${progressText} achieved', style: kSheetSubtitleStyle),
+                    ],
+                  ),
+                );
+              default:
+                return const SizedBox.shrink();
+            }
+          },
+        );
       },
     );
   }
 }
-
-class ProgressCards extends StatelessWidget {
-  const ProgressCards({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GridCards(
-      itemCount: 4,
-      itemBuilder: (context, index) {
-        switch (index) {
-          case 0:
-            return card(
-              title: 'Courses Enrolled',
-              icon: FontAwesomeIcons.book,
-              data: Text('12', style: kCardDataStyle),
-            );
-          case 1:
-            return card(
-              title: 'Pending Assignments',
-              icon: FontAwesomeIcons.tasks,
-              data: Text('3', style: kCardDataStyle),
-            );
-          case 2:
-            return card(
-              title: 'Upcoming Quizzes',
-              icon: Icons.calendar_month_outlined,
-              data: Text('Oct 12', style: kCardDataStyle),
-            );
-          case 3:
-            return card(
-              title: 'Overall Progress',
-              icon: Icons.speed,
-              data: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('75%', style: kCardDataStyle),
-                  Text('75% achieved', style: kSheetSubtitleStyle),
-                ],
-              ),
-            );
-          default:
-            return const SizedBox.shrink();
-        }
-      },
-    );;
-  }
-}
-
-
-
-
-
-
-
-
-
 
 class card extends StatelessWidget {
   final title;
@@ -199,13 +183,7 @@ class card extends StatelessWidget {
       padding: kAllPadding8,
       child: Container(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).shadowColor.withOpacity(0.4),
-              blurRadius: 10,
-              offset: Offset(0, 5),
-            ),
-          ],
+          boxShadow: kCardShadow(context),
           color: ThemeMode.light == getThemeMode()
               ? Colors.white
               : Theme.of(context).cardColor,
@@ -334,16 +312,22 @@ class buildQuickActionsCards extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: <Widget>[
-          quickActionsCard(title: 'Open Calendar', icon: Icons.calendar_month ),
-          quickActionsCard(title: 'View Reports', icon: FontAwesomeIcons.listCheck ),
-          quickActionsCard(title: 'Submit Assignment', icon: Icons.add ),
+          quickActionsCard(title: 'Submit Assignment', icon: Icons.add , onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AllTasksPage()));
 
+          }, ),
+          quickActionsCard(title: 'View Reports', icon: FontAwesomeIcons.listCheck , onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>  GradedWorkByCoursePage()));
+          },),
+          quickActionsCard(title: 'Enroll Course', icon: FontAwesomeIcons.book ,onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>  CourseEnrollmentPage()));
+
+          },),
         ],
       ),
     );
   }
 }
-
 
 class UpcomingEventCard extends StatelessWidget {
   final String day;
@@ -353,6 +337,7 @@ class UpcomingEventCard extends StatelessWidget {
   final String location;
   final Color backgroundColor;
   final Color textColor;
+  final Widget statusWidget;
 
   const UpcomingEventCard({
     super.key,
@@ -363,6 +348,7 @@ class UpcomingEventCard extends StatelessWidget {
     required this.location,
     required this.backgroundColor,
     required this.textColor,
+    required this.statusWidget,
   });
 
   @override
@@ -408,7 +394,6 @@ class UpcomingEventCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 20),
-            // Event details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -450,14 +435,8 @@ class UpcomingEventCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'View Details',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
+                  statusWidget,
+
                 ],
               ),
             ),
@@ -468,7 +447,100 @@ class UpcomingEventCard extends StatelessWidget {
   }
 }
 
+class UpcomingEventsGrid extends StatefulWidget {
+  const UpcomingEventsGrid({super.key});
 
+  @override
+  State<UpcomingEventsGrid> createState() => _UpcomingEventsGridState();
+}
 
+class _UpcomingEventsGridState extends State<UpcomingEventsGrid> {
+  late Future<List<UpcomingEventModel>> _eventsFuture;
 
+  @override
+  void initState() {
+    super.initState();
+    _eventsFuture = fetchUpcomingEvents();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<UpcomingEventModel>>(
+      future: _eventsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text("Could not load events."));
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("No upcoming events."));
+        }
+
+        final events = snapshot.data!;
+
+        final colorSchemes = [
+          {'bg': const Color(0xFFFEE6E2), 'text': const Color(0xFFD95B4A)},
+          {'bg': const Color(0xFFE0F7FA), 'text': const Color(0xFF00796B)},
+          {'bg': const Color(0xFFE8F5E9), 'text': const Color(0xFF388E3C)},
+          {'bg': const Color(0xFFFFF3E0), 'text': const Color(0xFFF57C00)},
+          {'bg': const Color(0xFFEDE7F6), 'text': const Color(0xFF5E35B1)},
+        ];
+
+        return GridCards(
+          mobileCount: 1,
+          nonMobileCount: 2,
+          itemCount: events.length,
+          itemBuilder: (context, index) {
+            final event = events[index];
+            final colorScheme = colorSchemes[index % colorSchemes.length];
+
+            return UpcomingEventCard(
+              day: DateFormat('d').format(event.eventDate),
+              month: DateFormat('MMM').format(event.eventDate),
+              title: event.title,
+              time: event.eventTime,
+              location: event.location,
+              backgroundColor: colorScheme['bg']!,
+              textColor: colorScheme['text']!,
+              statusWidget: _buildStatusWidget(event),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildStatusWidget(UpcomingEventModel event) {
+    final now = DateTime.now();
+    Color statusColor;
+    String statusText;
+
+    if (event.isExam) {
+      if (now.isAfter(event.endTime!)) {
+        statusText = "Finished";
+        statusColor = Colors.grey;
+      } else if (now.isBefore(event.startTime!)) {
+        statusText = "Upcoming";
+        statusColor = Colors.purple;
+      } else { // It's currently active
+        statusText = "Active Now";
+        statusColor = Colors.green;
+      }
+    } else {
+      // It's an assignment, so it's always just pending
+      statusText = "Pending";
+      statusColor = Colors.orange;
+    }
+
+    return Text(
+      statusText,
+      style: TextStyle(
+        color: statusColor,
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+      ),
+    );
+  }
+}

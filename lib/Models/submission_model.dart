@@ -1,39 +1,45 @@
+
+
 class Submission {
+  final String? id;
   final String studentId;
-  final String courseId;
-  final String taskId;
-  final String type;
   final String content;
   final DateTime submittedAt;
+  final double? grade;
+  final Map<String, dynamic>? answers;
 
   Submission({
+    this.id,
     required this.studentId,
-    required this.courseId,
-    required this.taskId,
-    required this.type,
     required this.content,
     required this.submittedAt,
+    this.grade,
+    this.answers
+
   });
 
-  factory Submission.fromMap(Map<String, dynamic> map) {
+  factory Submission.fromMap(Map<String, dynamic> map, String id) {
     return Submission(
-      studentId: map['studentId'],
-      courseId: map['courseId'],
-      taskId: map['taskId'],
-      type: map['type'],
-      content: map['content'],
-      submittedAt: DateTime.parse(map['submittedAt']),
+      id: id,
+      studentId: map['studentId'] as String,
+      content: map['content'] as String,
+      submittedAt: DateTime.parse(map['submittedAt'] as String),
+      grade: (map['grade'] as num?)?.toDouble(),
+      answers: map['answers'] != null ? Map<String, dynamic>.from(map['answers']) : null,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'studentId': studentId,
-      'courseId': courseId,
-      'taskId': taskId,
-      'type': type,
       'content': content,
       'submittedAt': submittedAt.toIso8601String(),
+      'grade': grade,
+      'answers':answers,
+
     };
   }
 }
+
+
+

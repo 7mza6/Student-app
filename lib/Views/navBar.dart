@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:users/Views/test.dart';
+import 'package:users/Views/profile_page.dart';
 import '../Viewmodels/Courses-Model.dart';
 import 'AboutPage.dart';
 import 'Courses.dart';
@@ -39,12 +39,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
           label: AppLocalizations.of(context)!.kHomeLabel,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.info),
-          label: AppLocalizations.of(context)!.kAboutLabel,
-        ),
-        BottomNavigationBarItem(
           icon: Icon(FontAwesomeIcons.book),
           label: AppLocalizations.of(context)!.kCoursesLabel,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle_outlined),
+          label: AppLocalizations.of(context)!.kProfileLabel,
         ),
       ],
       onTap: (index) {
@@ -57,12 +57,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
         } else if (index == 1) {
           selectedIndex = 1;
           setState(() {
-            setBody(AboutPage(context));
+            setBody(Courses());
           });
         } else if (index == 2) {
           selectedIndex = 2;
           setState(() {
-            setBody(Courses());
+            mainView.of(context)?.setBody(Profile());
           });
         }
       },

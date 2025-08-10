@@ -121,7 +121,7 @@ class UserButton extends StatelessWidget {
         child: ListTile(
           minVerticalPadding: kUserButtonContentPadding,
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(avatarUrl),
+            backgroundImage: AssetImage(avatarUrl),
           ),
           title: Text(userName),
           onTap: onPressed,

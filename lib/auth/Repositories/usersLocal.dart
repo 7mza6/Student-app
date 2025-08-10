@@ -140,4 +140,12 @@ class UserDatabase extends userRepository {
       whereArgs: [_user.id],
     );
   }
+
+
+  Future<void> enrollInCourse(String userId, String courseId)async {}
+  Future<void> unenrollFromCourse(String userId, String courseId)async {}
+
+  Future<void> addToken(String userId, String token)async {}
+  Future<user?> readById(String id)async{}
+
 }

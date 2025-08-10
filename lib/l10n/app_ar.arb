@@ -33,5 +33,6 @@
   "kBiometricAuthPrompt": "استخدم المصادقة البيومترية لتسجيل الدخول",
   "kBiometricReason": "يرجى المصادقة للمتابعة",
   "welcomeback": "مرحبًا مرة أخرى",
-  "kCoursesLabel": "المساقات"
+  "kCoursesLabel": "المساقات",
+  "kProfileLabel": "الملف الشخصي"
 }

@@ -170,7 +170,12 @@
     "description": "Welcome Back Massage"
   },
   "kCoursesLabel": "Courses",
-  "@kSettingsLabel": {
+  "@kCoursesLabel": {
     "description": "Label for the Courses item"
+  },
+
+  "kProfileLabel": "Profile",
+  "@kProfileLabel": {
+    "description": "Label for the Profile nav"
   }
 }

@@ -8,7 +8,7 @@ import '../Viewmodels/notification-viewModel.dart';
 
 
 class NotificationBody extends StatefulWidget {
-  final String userId = CurrentUser.getcurrentUser()?.id.toString()??'15'; // Pass the current user's ID to the widget
+  final String userId = CurrentUser.getcurrentUser()?.id.toString()??'15';
 
    NotificationBody({super.key});
 
@@ -77,7 +77,7 @@ class _NotificationBodyState extends State<NotificationBody> {
               onTap: () => _markAsRead(notification),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                color: isRead ? Colors.transparent : Colors.blue.withOpacity(0.08),
+                color: isRead ? Theme.of(context).cardColor : Colors.blue.withOpacity(0.6),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

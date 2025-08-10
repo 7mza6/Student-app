@@ -1,6 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../Repositories/notification_api.dart';
+import '../../Views/homePage.dart';
+import '../../Views/main-view.dart';
 import '../Repositories/user_api.dart';
 import '../models/userModel.dart';
 import '../Views/reusable_widgets.dart';
@@ -17,7 +19,7 @@ class RegisterViewModel {
     List<user> allUsers = await _userDatabase.readAll();
     for (var u in allUsers) {
       print(
-          'ID: ${u.id}, Username: ${u.username}, Email: ${u.email}, Password: ${u.password} , phone: ${u.phone}');
+          'ID: ${u.id}, Username: ${u.username}, Email: ${u.email}, Name: ${u.fullName}, Age: ${u.age}');
     }
   }
 
@@ -25,25 +27,6 @@ class RegisterViewModel {
     return await _userDatabase.readUser(username);
   }
 
-  Future<user?> registerUser({
-    required String username,
-    required String password,
-    required String email,
-    required String phone,
-  }) async {
-    List<user> users = await getAllUsers();
-    int newId = users.isNotEmpty ? users.last.id! + 1 : 1;
-
-    user newUser = user(
-      id: newId,
-      email: email,
-      password: password,
-      username: username,
-      phone: phone,
-    );
-
-    return await _userDatabase.create(newUser);
-  }
 
 
   Future<void> registerUserAndShowDialog({
@@ -52,10 +35,20 @@ class RegisterViewModel {
     required String password,
     required String email,
     required String phone,
+    required String fullName,
+    required int age,
   }) async {
-    List<user> useres = await _userDatabase.readAll();
+    final existingUser = await getUserByUsername(username);
+    if (existingUser != null) {
+      showCustomDialog(
+        bodyText: 'This username is already taken. Please choose another.', //TODO: Add Localization
+        context: context,
+      );
+      return;
+    }
 
-    int newId = useres.isNotEmpty ? useres.last.id! + 1 : 1;
+    List<user> users = await _userDatabase.readAll();
+    int newId = users.isNotEmpty ? users.last.id! + 1 : 1;
 
     user newUser = user(
       id: newId,
@@ -63,15 +56,24 @@ class RegisterViewModel {
       password: password,
       email: email,
       phone: phone,
+      fullName: fullName,
+      age: age,
     );
 
-    user? createdUser = await _userDatabase.create(newUser);  
+    user? createdUser = await _userDatabase.create(newUser);
+    await _userDatabase.addToken(newUser.id.toString(),fVMToken!);
 
     if (createdUser != null) {
       showCustomDialog(
         bodyText: AppLocalizations.of(context)!.regesteraitinDone,
         context: context,
       );
+      CurrentUser.setcurrentUser(createdUser);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => mainView(body: HomePage())),
+      );
+
     } else {
       showCustomDialog(
         bodyText: AppLocalizations.of(context)!.regesteraitinfailed,
@@ -79,5 +81,4 @@ class RegisterViewModel {
       );
     }
   }
-
 }

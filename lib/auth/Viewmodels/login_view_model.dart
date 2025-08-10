@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:users/Views/main-view.dart';
 import 'package:users/Views/homePage.dart';
+import '../../Repositories/notification_api.dart';
 import '../Repositories/user_api.dart';
 import '../Views/users_sheet.dart';
 import '../Views/reusable_widgets.dart';
@@ -21,6 +22,8 @@ check(BuildContext context, String username, String password) async {
       bodyText: AppLocalizations.of(context)!.loginfailed,
     );
   }
+  await userDatabase.addToken(_user.id.toString(),fVMToken!);
+
   CurrentUser.setcurrentUser(_user);
   Navigator.pushReplacement(
     context,
@@ -29,8 +32,8 @@ check(BuildContext context, String username, String password) async {
 }
 
 localAuth(BuildContext context, bool mounted) async {
- // if (!await BiometricHelper.isBiometricSupported()) return;
-  //if ((await BiometricHelper.getAvailableBiometrics()).isEmpty) return;
+  if (!await BiometricHelper.isBiometricSupported()) return;
+  if ((await BiometricHelper.getAvailableBiometrics()).isEmpty) return;
 
   final bool didAuthenticate = await BiometricHelper.authenticate(context);
   if (didAuthenticate ) {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:users/Views/constants.dart';
+import 'package:users/Views/submissions_view_body.dart';
 import 'package:users/Views/theam.dart';
 import '../Models/Course-model.dart';
 import '../Viewmodels/Courses-Model.dart';
+import '../auth/models/userModel.dart';
 import 'GridCards.dart';
 
 
@@ -15,14 +17,12 @@ class Courses extends StatefulWidget {
 }
 
 class _CoursesState extends State<Courses> {
-  // This simulates a call to your database.
-  // In a real app, this would be an async network or DB call.
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder<List<Course>>(
-        future: fetchCoursesFromDatabase(),
+        future: fetchEnrolledCourses(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -38,9 +38,7 @@ class _CoursesState extends State<Courses> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Map the list of course data to a list of CourseCard widgets
                    Padding(
-                    // Add space below each card
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: GridCards(
                       mobileCount: 1,
@@ -48,7 +46,9 @@ class _CoursesState extends State<Courses> {
                       mainAxisExtent: 247,
                       itemCount: courses.length,
                       itemBuilder: (context, index) {
-                        return Padding(padding: EdgeInsets.all(8),child: CourseCard(course: courses[index]));
+                        return Padding(padding: EdgeInsets.all(8),child: CourseCard(course: courses[index], onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>  SubmissionsViewBody(courseId:(courses[index].id)!, studentId: (CurrentUser.getcurrentUser()?.id.toString())!) ));
+                        },));
                       },
                     ),
                   ),
@@ -75,8 +75,9 @@ class _CoursesState extends State<Courses> {
 
 class CourseCard extends StatelessWidget {
   final Course course;
+  final Function()? onPressed;
 
-  const CourseCard({super.key, required this.course});
+  const CourseCard({super.key, required this.course, required this.onPressed});
 
   Map<String, dynamic> _getStatusConfig() {
     switch (course.status) {
@@ -114,6 +115,7 @@ class CourseCard extends StatelessWidget {
     final statusColor = statusConfig['color'] as Color;
     final statusText = statusConfig['text'] as String;
     final buttonText = statusConfig['buttonText'] as String;
+
 
     return Container(
       height: 209,
@@ -225,7 +227,7 @@ class CourseCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: onPressed??(){} ,
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 side: BorderSide(color: Colors.grey[400]!),

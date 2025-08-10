@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:users/Views/test.dart';
+import 'package:users/Views/profile_page.dart';
 import 'package:users/auth/models/userModel.dart';
 
 import 'DrawerView.dart';
@@ -29,7 +29,7 @@ class _mainViewState extends State<mainView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppHeader(context),
+        appBar: AppHeader(context,this),
         drawer: DrawerView(),
         bottomNavigationBar: BottomNavBar(mainView: this,),
         body: widget.body ?? HomePage(),        

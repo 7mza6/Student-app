@@ -183,13 +183,13 @@ class _LoginPageState extends State<LoginPage> {
                      SizedBox(height: 10),
 
                            // Forgot Password
-                           Align(
+                     /*   Align(
                       alignment: Alignment.centerRight,
-                      child: TextButton(
+                     child: TextButton(
                         onPressed: () {},
                         child:  Text('Forgot Password', style: TextStyle(color: kPrimaryColor)),//TODO: Add Localization
                       ),
-                           ),
+                           ),*/
                      SizedBox(height: 20),
 
                       Row(
@@ -228,9 +228,12 @@ class _LoginPageState extends State<LoginPage> {
                      SizedBox(height: 12),
 
 
-            // Sign Up Button
             OutlinedButton(
                 onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterPage())
+                  );
                 },
                 style: OutlinedButton.styleFrom(
                   padding:  EdgeInsets.symmetric(vertical: 16),

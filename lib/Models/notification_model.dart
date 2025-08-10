@@ -21,7 +21,6 @@ class NotificationModel {
       id: id,
       title: map['title'] as String,
       body: map['body'] as String,
-      // Timestamps are often stored as ISO 8601 strings in databases.
       timestamp: DateTime.parse(map['timestamp'] as String),
       isRead: map['isRead'] as bool,
     );
@@ -32,13 +31,11 @@ class NotificationModel {
     return {
       'title': title,
       'body': body,
-      // Store timestamp in a standardized string format.
       'timestamp': timestamp.toIso8601String(),
       'isRead': isRead,
     };
   }
 
-  /// Creates a copy of the notification with some updated values.
   NotificationModel copyWith({bool? isRead}) {
     return NotificationModel(
       id: id,
