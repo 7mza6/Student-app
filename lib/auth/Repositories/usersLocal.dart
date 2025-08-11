@@ -3,18 +3,19 @@ import 'package:sqflite/sqflite.dart';
 import 'package:users/auth/Repositories/userRepository.dart';
 import '../../Repositories/local/app_db.dart';
 import '../models/userModel.dart';
-
+import '../models/UserFields.dart';
 
 class UserLocal implements userRepository {
   Future<Database> get _db async => AppDb.instance.database;
 
   Map<String, Object?> _toDb(user u) => {
-    'id': u.id.toString(),
-    'email': u.email,
-    'username': u.username,
-    'phone': u.phone,
-    'fullName': u.fullName,
-    'age': u.age,
+    UserFields.id: u.id.toString(),
+    UserFields.email: u.email,
+    UserFields.username: u.username,
+    UserFields.password: u.password,
+    UserFields.phone: u.phone,
+    UserFields.fullName: u.fullName,
+    UserFields.age: u.age,
     'enrolledCoursesJson': jsonEncode(u.enrolledCourses),
     'notificationSettingsJson': jsonEncode(u.notificationSettings),
     'tokensJson': jsonEncode(u.tokens),
@@ -22,20 +23,19 @@ class UserLocal implements userRepository {
 
   user _fromDb(Map<String, Object?> m) {
     return user(
-      id: int.tryParse(m['id'] as String? ?? '0'),
-      email: m['email'] as String?,
-      username: m['username'] as String?,
-      phone: m['phone'] as String?,
-      fullName: m['fullName'] as String?,
-      age: m['age'] as int?,
+      id: int.tryParse(m[UserFields.id] as String? ?? '0'),
+      email: m[UserFields.email] as String?,
+      username: m[UserFields.username] as String?,
+      password: m[UserFields.password] as String?,
+      phone: m[UserFields.phone] as String?,
+      fullName: m[UserFields.fullName] as String?,
+      age: m[UserFields.age] as int?,
       enrolledCourses: m['enrolledCoursesJson'] != null ? List<String>.from(jsonDecode(m['enrolledCoursesJson'] as String)) : [],
       notificationSettings: m['notificationSettingsJson'] != null ? Map<String, bool>.from(jsonDecode(m['notificationSettingsJson'] as String)) : null,
       tokens: m['tokensJson'] != null ? List<String>.from(jsonDecode(m['tokensJson'] as String)) : [],
-      password: '',
     );
   }
 
-  // --- CORRECTED IMPLEMENTATION of `create` ---
   @override
   Future<user> create(user _user, {DatabaseExecutor? txn}) async {
     final db = txn ?? await _db;
@@ -44,19 +44,17 @@ class UserLocal implements userRepository {
     return _user;
   }
 
-  // --- No changes needed below this line for the lock issue ---
-
   @override
   Future<user?> readById(String id) async {
     final db = await _db;
-    final rows = await db.query('users', where: 'id = ?', whereArgs: [id], limit: 1);
+    final rows = await db.query('users', where: '${UserFields.id} = ?', whereArgs: [id], limit: 1);
     return rows.isNotEmpty ? _fromDb(rows.first) : null;
   }
 
   @override
   Future<user?> readUser(String username) async {
     final db = await _db;
-    final rows = await db.query('users', where: 'username = ?', whereArgs: [username], limit: 1);
+    final rows = await db.query('users', where: '${UserFields.username} = ?', whereArgs: [username], limit: 1);
     return rows.isNotEmpty ? _fromDb(rows.first) : null;
   }
 
@@ -71,13 +69,13 @@ class UserLocal implements userRepository {
   Future<int> update(user _user) async {
     final db = await _db;
     return await db.update('users', _toDb(_user),
-        where: 'id = ?', whereArgs: [_user.id.toString()]);
+        where: '${UserFields.id} = ?', whereArgs: [_user.id.toString()]);
   }
 
   @override
   Future<int> delete(int id) async {
     final db = await _db;
-    return await db.delete('users', where: 'id = ?', whereArgs: [id.toString()]);
+    return await db.delete('users', where: '${UserFields.id} = ?', whereArgs: [id.toString()]);
   }
 
   @override
@@ -108,7 +106,13 @@ class UserLocal implements userRepository {
   }
 
   @override
-  Future<int> updatePassword(user _user, String newPassword) {
-    return Future.value(1);
+  Future<int> updatePassword(user _user, String newPassword) async {
+    final db = await _db;
+    return await db.update(
+      'users',
+      {UserFields.password: newPassword},
+      where: '${UserFields.id} = ?',
+      whereArgs: [_user.id.toString()],
+    );
   }
 }

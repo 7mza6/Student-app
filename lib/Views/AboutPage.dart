@@ -12,8 +12,8 @@ Widget AboutPage(BuildContext context) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Image.network(
-          kAppLogoUrl,
+        Image.asset(
+          kAppLogo,
           height: kLogoSize,
           width: kLogoSize,
           fit: BoxFit.contain,

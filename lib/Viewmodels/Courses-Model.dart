@@ -1,65 +1,47 @@
-
 import '../Models/Course-model.dart';
 import '../Repositories/course_api.dart';
+import '../Repositories/local/courseLocal.dart'; // Local DB
 import '../auth/models/userModel.dart';
-
+import '../services/network_info.dart'; // Network check
 
 Future<List<Course>> fetchCoursesFromDatabase() async {
-  final CourseApi courseApi = CourseApi();
-  try {
-    final List<Course> courses = await courseApi.readAll();
-    print("Successfully fetched ${courses.length} courses.");
-    return courses;
-  } catch (e) {
-    print("An error occurred while fetching courses from the API: $e");
-    return [];
+  final courseApi = CourseApi();
+  final courseLocal = CourseLocal();
+
+  if (await NetworkInfo.isOnline) {
+    try {
+      print("Online: Fetching all courses from API...");
+      final remoteCourses = await courseApi.readAll();
+      await courseLocal.upsertMany(remoteCourses); // Cache the result
+      return remoteCourses;
+    } catch (e) {
+      print("Network error fetching all courses, falling back to local. Error: $e");
+      return await courseLocal.readAll();
+    }
+  } else {
+    print("Offline: Fetching all courses from local DB.");
+    return await courseLocal.readAll();
   }
 }
 
 Future<List<Course>> fetchUnenrolledCourses() async {
-  final currentUser =  CurrentUser.getcurrentUser();
-  if (currentUser == null || currentUser.id == null) {
-    print("No logged-in user found.");
-    return [];
-  }
-  final courseApi = CourseApi();
-  final List<Course> availableCourses = [];
+  final currentUser = CurrentUser.getcurrentUser();
+  if (currentUser == null) return [];
+
+  final allCourses = await fetchCoursesFromDatabase();
   final userEnrolledIds = currentUser.enrolledCourses;
-  final allCourses = await courseApi.readAll();
-  for (final course in allCourses) {
-    if (!userEnrolledIds.contains(course.id)) {
-      availableCourses.add(course);
-    }
-  }
 
-  return availableCourses;
+  return allCourses.where((course) => !userEnrolledIds.contains(course.id)).toList();
 }
-
 
 Future<List<Course>> fetchEnrolledCourses() async {
-  final currentUser =  CurrentUser.getcurrentUser();
-  if (currentUser == null || currentUser.id == null) {
-    print("No logged-in user found.");
-    return [];
-  }
+  final currentUser = CurrentUser.getcurrentUser();
+  if (currentUser == null) return [];
 
+  final allCourses = await fetchCoursesFromDatabase();
   final userEnrolledIds = currentUser.enrolledCourses;
 
-  if (userEnrolledIds.isEmpty) {
-    print("User is not enrolled in any courses.");
-    return [];
-  }
+  if (userEnrolledIds.isEmpty) return [];
 
-  final courseApi = CourseApi();
-  final List<Course> enrolledCourses = [];
-  final allCourses = await courseApi.readAll();
-
-  for (final course in allCourses) {
-    if (userEnrolledIds.contains(course.id)) {
-      enrolledCourses.add(course);
-    }
-  }
-
-  return enrolledCourses;
+  return allCourses.where((course) => userEnrolledIds.contains(course.id)).toList();
 }
-

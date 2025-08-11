@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:users/Views/main-view.dart';import 'Repositories/notification_api.dart';
+import 'package:users/Views/main-view.dart';
+import 'package:users/services/sync_service.dart';import 'Repositories/notification_api.dart';
 
 import 'Views/AboutPage.dart';
 import 'Views/constants.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
   await initLocalNotifications();
 
   runApp(MyApp());
+  SyncService().startListening();
 }
 
 class MyApp extends StatefulWidget {

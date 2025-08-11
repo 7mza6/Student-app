@@ -1,6 +1,6 @@
-// lib/Repositories/local/app_db.dart
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import '../../auth/models/UserFields.dart';
 
 class AppDb {
   static final AppDb instance = AppDb._();
@@ -14,58 +14,46 @@ class AppDb {
 
     _db = await openDatabase(
       path,
-      version: 1,
-      onCreate: _create,
+      version: 2,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
     return _db!;
   }
 
-  Future<void> _create(Database db, int v) async {
+  Future<void> _onCreate(Database db, int version) async {
+    print("Creating database version $version...");
     await db.execute('''
       CREATE TABLE users(
-        id TEXT PRIMARY KEY, email TEXT, username TEXT, phone TEXT,
-        fullName TEXT, age INTEGER, enrolledCoursesJson TEXT,
-        notificationSettingsJson TEXT, tokensJson TEXT
-      );
-    ''');
-
-    await db.execute('''
-      CREATE TABLE courses(
-        id TEXT PRIMARY KEY, icon TEXT, title TEXT, status TEXT,
-        progress REAL, teacherId TEXT, enrolledStudentsJson TEXT
-      );
-    ''');
-
-    await db.execute('''
-      CREATE TABLE assignments(
         id TEXT PRIMARY KEY,
-        courseId TEXT NOT NULL,
-        dataJson TEXT NOT NULL
+        email TEXT,
+        username TEXT,
+        password TEXT, -- Included from the start for new users
+        phone TEXT,
+        fullName TEXT,
+        age INTEGER,
+        enrolledCoursesJson TEXT,
+        notificationSettingsJson TEXT,
+        tokensJson TEXT
       );
     ''');
 
-    await db.execute('''
-      CREATE TABLE exams(
-        id TEXT PRIMARY KEY,
-        courseId TEXT NOT NULL,
-        dataJson TEXT NOT NULL
-      );
-    ''');
+    await db.execute('CREATE TABLE courses(...)');
+    await db.execute('CREATE TABLE assignments(...)');
+    await db.execute('CREATE TABLE exams(...)');
+    await db.execute('CREATE TABLE submissions(...)');
+    await db.execute('CREATE TABLE notifications(...)');
+    print("Database created successfully.");
+  }
 
-    await db.execute('''
-      CREATE TABLE submissions(
-        id TEXT PRIMARY KEY, courseId TEXT NOT NULL, taskId TEXT NOT NULL,
-        type TEXT NOT NULL, studentId TEXT NOT NULL, content TEXT,
-        submittedAt INTEGER NOT NULL, grade REAL, answersJson TEXT,
-        UNIQUE(courseId, taskId, type, studentId)
-      );
-    ''');
-
-    await db.execute('''
-      CREATE TABLE notifications(
-        id TEXT PRIMARY KEY, userId TEXT NOT NULL, title TEXT, body TEXT,
-        timestamp INTEGER NOT NULL, isRead INTEGER NOT NULL
-      );
-    ''');
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    print("Upgrading database from version $oldVersion to $newVersion...");
+    if (oldVersion < 2) {
+      try {
+        await db.execute('ALTER TABLE users ADD COLUMN ${UserFields.password} TEXT');
+      } catch (e) {
+        print("Error during v2 migration: $e");
+      }
+    }
   }
 }

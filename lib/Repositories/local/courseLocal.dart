@@ -37,7 +37,7 @@ class CourseLocal implements CourseRepository {
 
   @override
   Future<Course> create(Course course,{DatabaseExecutor? txn}) async {
-    final db = await _db;
+    final db = txn ?? await _db;
     await db.insert('courses', _toDb(course),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return course;

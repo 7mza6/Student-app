@@ -92,7 +92,7 @@ const kLoginRoute = '/login';
 
 // URLs
 const kDefaultAvatarUrl =  'images/profile.png';
-const kAppLogoUrl = 'https://images-platform.99static.com/nK0Z_sdR6pVTLL97Gq1z5TkG3vQ=/102x102:921x921/500x500/top/smart/99designs-contests-attachments/71/71057/attachment_71057015';
+const kAppLogo = 'images/ic_launcher.png';
 const kUserProfileImageUrl = 'images/profile.png';
 const kFacebookUrl = 'https://www.facebook.com/hamza.msayes.5';
 const kInstagramUrl = 'https://www.instagram.com/hamza.sayes/';
@@ -101,7 +101,6 @@ const kSupportEmailUrl = 'mailto:hamza.sayes@students.alquds.edu';
 const kBackgroundImage = "images/background.png";
 
 
-// ===== DIMENSIONS & SPACING =====
 //shadow
 
  List<BoxShadow>? kCardShadow(context) {return[

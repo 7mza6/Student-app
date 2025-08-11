@@ -20,7 +20,7 @@ class NotificationLocal implements NotificationRepository {
   );
 
   @override
-  Future<NotificationModel> create(String userId, NotificationModel n) async {
+  Future<NotificationModel> create(String userId, NotificationModel n,{DatabaseExecutor? txn}) async {
     final db = await _db;
     await db.insert('notifications', _toDb(userId, n), conflictAlgorithm: ConflictAlgorithm.replace);
     return n;

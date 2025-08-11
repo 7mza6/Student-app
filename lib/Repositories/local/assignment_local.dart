@@ -9,7 +9,7 @@ class AssignmentLocal implements AssignmentRepository {
 
   @override
   Future<Assignment> create(String courseId, Assignment assignment,{DatabaseExecutor? txn}) async {
-    final db = await _db;
+    final db = txn ?? await _db;
     await db.insert(
       'assignments',
       {

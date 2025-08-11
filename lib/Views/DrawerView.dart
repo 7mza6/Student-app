@@ -55,7 +55,7 @@ class _DrawerViewState extends State<DrawerView> {
            CircleAvatar(
             backgroundColor: Colors.white.withOpacity(0.0),
             radius: kAvatarRadius, 
-            backgroundImage: NetworkImage(kAppLogoUrl),
+            backgroundImage: AssetImage(kAppLogo),
           ),
           kWidthSpacer15, 
           Column(

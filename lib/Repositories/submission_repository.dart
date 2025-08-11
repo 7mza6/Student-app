@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import '../Models/submission_model.dart';
 
 abstract class SubmissionRepository {
-  Future<Submission> create(String courseId, String taskId, String type, Submission submission, {DatabaseExecutor? txn});
+  Future<Submission> create(String courseId, String taskId, String type, Submission submission,{DatabaseExecutor? txn});
 
   Future<List<Submission>> readAllForTask(String courseId, String taskId, String type);
 

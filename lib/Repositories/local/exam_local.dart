@@ -9,7 +9,7 @@ class ExamLocal implements ExamRepository {
 
   @override
   Future<Exam> create(String courseId, Exam exam,{DatabaseExecutor? txn}) async {
-    final db = await _db;
+    final db = txn ?? await _db;
     await db.insert(
       'exams',
       { 'id': exam.id, 'courseId': courseId, 'dataJson': jsonEncode(exam.toMap()) },

@@ -13,51 +13,45 @@ import 'Courses-Model.dart';
 Future<DashboardStatsViewModel> fetchDashboardStats() async {
   final currentUser = CurrentUser.getcurrentUser();
   if (currentUser == null || currentUser.id == null) {
+    // Return a default empty state
     return DashboardStatsViewModel(
-      coursesEnrolledCount: 0,
-      pendingAssignmentsCount: 0,
-      overallProgress: 0.0,
-      nextUpcomingQuizDate: null,
+      coursesEnrolledCount: 0, pendingAssignmentsCount: 0, overallProgress: 0.0,
     );
   }
 
-  final List<Course> enrolledCourses = await fetchEnrolledCourses();
-  final int coursesEnrolledCount = enrolledCourses.length;
-  double totalProgress = 0;
-  for (final course in enrolledCourses) {
-    totalProgress += course.progress;
-  }
-  final double overallProgress = coursesEnrolledCount > 0 ? totalProgress / coursesEnrolledCount : 0.0;
+  // This function is now offline-aware
+  final enrolledCourses = await fetchEnrolledCourses();
+  final coursesEnrolledCount = enrolledCourses.length;
+
+  double totalProgress = enrolledCourses.fold(0.0, (sum, course) => sum + course.progress);
+  final overallProgress = coursesEnrolledCount > 0 ? totalProgress / coursesEnrolledCount : 0.0;
 
   int pendingAssignmentsCount = 0;
-  final List<Exam> allUpcomingQuizzes = [];
+  DateTime? nextUpcomingQuizDate;
   final now = DateTime.now();
 
   for (final course in enrolledCourses) {
+    // This function is now offline-aware
     final tasks = await fetchTasksAndSubmissions(
       courseId: course.id!,
       studentId: currentUser.id!.toString(),
     );
 
-    for (final assignmentTask in tasks['assignments']!) {
-      if (assignmentTask.submission == null && now.isBefore(assignmentTask.dueDate)) {
-        pendingAssignmentsCount++;
-      }
-    }
+    pendingAssignmentsCount += tasks['assignments']!.where((t) => t.submission == null && now.isBefore(t.dueDate)).length;
 
-    for (final examTask in tasks['exams']!) {
-      final exam = examTask.task as Exam;
-      if (now.isBefore(exam.startDateTime)) {
-        allUpcomingQuizzes.add(exam);
+    final upcomingQuizzes = tasks['exams']!
+        .where((t) => now.isBefore((t.task as Exam).startDateTime))
+        .map((t) => (t.task as Exam).startDateTime)
+        .toList();
+
+    if (upcomingQuizzes.isNotEmpty) {
+      upcomingQuizzes.sort();
+      if (nextUpcomingQuizDate == null || upcomingQuizzes.first.isBefore(nextUpcomingQuizDate!)) {
+        nextUpcomingQuizDate = upcomingQuizzes.first;
       }
     }
   }
 
-  DateTime? nextUpcomingQuizDate;
-  if (allUpcomingQuizzes.isNotEmpty) {
-    allUpcomingQuizzes.sort((a, b) => a.startDateTime.compareTo(b.startDateTime));
-    nextUpcomingQuizDate = allUpcomingQuizzes.first.startDateTime;
-  }
   return DashboardStatsViewModel(
     coursesEnrolledCount: coursesEnrolledCount,
     pendingAssignmentsCount: pendingAssignmentsCount,
@@ -66,53 +60,38 @@ Future<DashboardStatsViewModel> fetchDashboardStats() async {
   );
 }
 
-
 Future<List<UpcomingEventModel>> fetchUpcomingEvents() async {
   final currentUser = CurrentUser.getcurrentUser();
-  if (currentUser == null || currentUser.id == null) return [];
+  if (currentUser == null) return [];
 
-  final List<UpcomingEventModel> upcomingEvents = [];
+  final upcomingEvents = <UpcomingEventModel>[];
   final now = DateTime.now();
-
-  final List<Course> enrolledCourses = await fetchEnrolledCourses();
+  final enrolledCourses = await fetchEnrolledCourses(); // Offline-aware
 
   for (final course in enrolledCourses) {
-    final tasksForCourse = await fetchTasksAndSubmissions(
+    // Offline-aware
+    final tasks = await fetchTasksAndSubmissions(
       courseId: course.id!,
       studentId: currentUser.id!.toString(),
     );
 
-    for (final assignmentTask in tasksForCourse['assignments']!) {
-      if (assignmentTask.submission == null && now.isBefore(assignmentTask.dueDate)) {
-        upcomingEvents.add(
-          UpcomingEventModel(
-            title: assignmentTask.title,
-            courseTitle: course.title,
-            eventDate: assignmentTask.dueDate,
-            eventTime: DateFormat.jm().format(assignmentTask.dueDate),
-            location: 'Online',
-            isExam: false,
-          ),
-        );
+    for (final at in tasks['assignments']!) {
+      if (at.submission == null && now.isBefore(at.dueDate)) {
+        upcomingEvents.add(UpcomingEventModel(
+          title: at.title, courseTitle: course.title, eventDate: at.dueDate,
+          eventTime: DateFormat.jm().format(at.dueDate), location: 'Online', isExam: false,
+        ));
       }
     }
 
-    // Process exams
-    for (final examTask in tasksForCourse['exams']!) {
-      final exam = examTask.task as Exam;
-      if (examTask.submission == null && now.isBefore(exam.endDateTime)) { // Use endDateTime for filtering
-        upcomingEvents.add(
-          UpcomingEventModel(
-            title: exam.title,
-            courseTitle: course.title,
-            eventDate: exam.startDateTime, // The main event date is the start time
-            eventTime: "${DateFormat.jm().format(exam.startDateTime)} - ${DateFormat.jm().format(exam.endDateTime)}",
-            location: 'Campus Location',
-            isExam: true, // This is an exam
-            startTime: exam.startDateTime, // Pass the specific start time
-            endTime: exam.endDateTime,   // Pass the specific end time
-          ),
-        );
+    for (final et in tasks['exams']!) {
+      final exam = et.task as Exam;
+      if (et.submission == null && now.isBefore(exam.endDateTime)) {
+        upcomingEvents.add(UpcomingEventModel(
+          title: exam.title, courseTitle: course.title, eventDate: exam.startDateTime,
+          eventTime: "${DateFormat.jm().format(exam.startDateTime)} - ${DateFormat.jm().format(exam.endDateTime)}",
+          location: 'Campus Location', isExam: true, startTime: exam.startDateTime, endTime: exam.endDateTime,
+        ));
       }
     }
   }

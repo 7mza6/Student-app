@@ -26,7 +26,7 @@ class SubmissionLocal implements SubmissionRepository {
 
   @override
   Future<Submission> create(String courseId, String taskId, String type, Submission s,{DatabaseExecutor? txn}) async {
-    final db = await _db;
+    final db = txn ?? await _db;
     await db.insert('submissions', _toDb(courseId, taskId, type, s), conflictAlgorithm: ConflictAlgorithm.replace);
     return s;
   }
