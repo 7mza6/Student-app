@@ -39,6 +39,16 @@ class Submission {
 
     };
   }
+
+  copyWith({ final String? id,
+   String? studentId,
+    String? content,
+   DateTime? submittedAt,
+   double? grade,
+   Map<String, dynamic>? answers,}) {
+    return Submission(studentId: this.studentId, content: this.content, submittedAt: this.submittedAt,grade: this.grade,answers: this.answers,id: this.id);
+  }
+
 }
 
 

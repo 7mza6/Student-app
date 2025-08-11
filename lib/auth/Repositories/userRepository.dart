@@ -1,7 +1,9 @@
+import 'package:sqflite/sqflite.dart';
+
 import '../models/userModel.dart';
 
 abstract class userRepository {
-  Future<user> create(user _user);
+  Future<user> create(user _user, {DatabaseExecutor? txn});
   Future<user?> readUser(String username);
   Future<user?> readById(String id);
   Future<List<user>> readAll();

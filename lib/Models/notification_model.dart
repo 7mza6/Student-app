@@ -36,12 +36,18 @@ class NotificationModel {
     };
   }
 
-  NotificationModel copyWith({bool? isRead}) {
+  NotificationModel copyWith({bool? isRead,
+     String? id,
+     String? title,
+     String? body,
+     DateTime? timestamp,
+
+  }) {
     return NotificationModel(
-      id: id,
-      title: title,
-      body: body,
-      timestamp: timestamp,
+      id: this.id,
+      title: this.title,
+      body: this.body,
+      timestamp: this.timestamp,
       isRead: isRead ?? this.isRead,
     );
   }

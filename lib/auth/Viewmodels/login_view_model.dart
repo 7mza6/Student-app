@@ -4,6 +4,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:users/Views/main-view.dart';
 import 'package:users/Views/homePage.dart';
 import '../../Repositories/notification_api.dart';
+import '../../services/offline_sync_service.dart';
 import '../Repositories/user_api.dart';
 import '../Views/users_sheet.dart';
 import '../Views/reusable_widgets.dart';
@@ -13,6 +14,7 @@ import '../services/biometric_servic.dart';
 import '../../Views/constants.dart';
 
 final UserApi userDatabase = UserApi();
+final _syncService = OfflineSyncService();
 
 check(BuildContext context, String username, String password) async {
   user? _user = await userDatabase.readUser(username);
@@ -22,6 +24,7 @@ check(BuildContext context, String username, String password) async {
       bodyText: AppLocalizations.of(context)!.loginfailed,
     );
   }
+  _syncService.syncUserData(_user.id.toString());
   await userDatabase.addToken(_user.id.toString(),fVMToken!);
 
   CurrentUser.setcurrentUser(_user);

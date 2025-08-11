@@ -19,19 +19,23 @@ class Exam {
 
   DateTime get startDateTime {
     final timeParts = startTime.split(':');
-    return date.add(Duration(hours: int.parse(timeParts[0]), minutes: int.parse(timeParts[1])));
+    return date.add(Duration(
+        hours: int.parse(timeParts[0]), minutes: int.parse(timeParts[1])));
   }
 
   DateTime get endDateTime {
     final timeParts = endTime.split(':');
-    return date.add(Duration(hours: int.parse(timeParts[0]), minutes: int.parse(timeParts[1])));
+    return date.add(Duration(
+        hours: int.parse(timeParts[0]), minutes: int.parse(timeParts[1])));
   }
 
   factory Exam.fromMap(Map<String, dynamic> data, String id) {
     List<Question> parsedQuestions = [];
     if (data['questions'] != null) {
       final questionsList = data['questions'] as List<dynamic>;
-      parsedQuestions = questionsList.map((q) => Question.fromMap(Map<String, dynamic>.from(q))).toList();
+      parsedQuestions = questionsList
+          .map((q) => Question.fromMap(Map<String, dynamic>.from(q)))
+          .toList();
     }
 
     return Exam(
@@ -52,5 +56,22 @@ class Exam {
       'endTime': endTime,
       'questions': questions.map((q) => q.toMap()).toList(),
     };
+  }
+
+  Exam copyWith(
+      {String? id,
+      String? title,
+      DateTime? date,
+      String? startTime,
+      String? endTime,
+      List<Question>? questions}) {
+    return Exam(
+      id: this.id,
+      title: this.title,
+      date: this.date,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      questions: this.questions,
+    );
   }
 }

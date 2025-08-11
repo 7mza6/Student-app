@@ -55,6 +55,8 @@ dependencies:
   cloud_functions: ^4.6.0
   googleapis_auth: ^1.4.1
   json_annotation: ^4.8.1
+  connectivity_plus: ^5.0.2
+  uuid: ^4.1.0
 
 dev_dependencies:
   flutter_test:

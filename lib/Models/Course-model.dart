@@ -27,6 +27,7 @@ class Course {
   });
 
   Course copyWith({
+    String? id,
     String? icon,
     String? title,
     CourseStatus? status,

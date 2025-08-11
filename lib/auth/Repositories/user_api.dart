@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:users/auth/Repositories/userRepository.dart'; // Adjust path
 import '../../Repositories/notification_api.dart';
 import '../models/UserFields.dart';
@@ -11,7 +12,7 @@ class UserApi extends userRepository {
   final DatabaseReference _teachersRef = database.ref('teachers');
 
   @override
-  Future<user> create(user _user) {
+  Future<user> create(user _user ,{DatabaseExecutor? txn}) {
     return _usersRef.child(_user.id.toString()).set(_user.toJson()).then((_) {
       return _user;
     });
