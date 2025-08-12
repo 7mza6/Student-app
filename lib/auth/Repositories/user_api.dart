@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:users/auth/Repositories/userRepository.dart'; // Adjust path
-import '../../Repositories/notification_api.dart';
+import '../../notifications/Repositories/notification_api.dart';
 import '../models/UserFields.dart';
 import '../models/userModel.dart';                       // Adjust path
 

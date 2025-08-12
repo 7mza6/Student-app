@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../main.dart';
-import '../../views/constants.dart';
+import '../../shared/Viewmodels/constants.dart';
 import '../Viewmodels/register_view_model.dart' as regis;
 import '../Viewmodels/register_view_model.dart';
 

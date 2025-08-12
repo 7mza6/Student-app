@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:users/auth/Repositories/usersLocal.dart';
 
-import '../../services/network_info.dart';
+import '../../shared/services/network_info.dart';
 import '../Repositories/userRepository.dart';
 import '../Repositories/user_api.dart';
 import '../models/userModel.dart';

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:users/Views/main-view.dart';
-import 'package:users/Views/homePage.dart';
-import '../../Repositories/notification_api.dart';
-import '../../services/network_info.dart';
-import '../../services/offline_sync_service.dart';
+import 'package:users/layout/Views/main-view.dart';
+import '../../notifications/Repositories/notification_api.dart';
+import '../../courses/Views/homePage.dart';
+import '../../shared/services/network_info.dart';
+import '../../shared/services/offline_sync_service.dart';
 import '../Views/users_sheet.dart';
 import '../Views/reusable_widgets.dart';
 import '../models/userModel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/biometric_servic.dart';
-import '../../Views/constants.dart';
+import '../../shared/Viewmodels/constants.dart';
 import '../Repositories/hybrid_user_repository.dart';
 
 final HybridUserRepository userDatabase = HybridUserRepository();

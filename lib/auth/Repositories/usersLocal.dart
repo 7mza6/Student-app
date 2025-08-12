@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:users/auth/Repositories/userRepository.dart';
-import '../../Repositories/local/app_db.dart';
+import '../../shared/Repositories/app_db.dart';
 import '../models/userModel.dart';
 import '../models/UserFields.dart';
 

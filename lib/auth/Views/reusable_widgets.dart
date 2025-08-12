@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../Views/constants.dart';
+import '../../shared/Viewmodels/constants.dart';
 
 void showCustomDialog({required BuildContext context, required String bodyText, bool? swich}) {
   showDialog<String>(

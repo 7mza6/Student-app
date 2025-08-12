@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:users/Views/main-view.dart';
-import 'package:users/services/sync_service.dart';import 'Repositories/notification_api.dart';
+import 'package:users/layout/Views/main-view.dart';
+import 'package:users/shared/services/sync_service.dart';
 
-import 'Views/AboutPage.dart';
-import 'Views/constants.dart';
-import 'Views/homePage.dart';
-import 'Views/profile_page.dart';
-import 'Views/theam.dart';
+import 'profile/Views/AboutPage.dart';
+import 'profile/Views/profile_page.dart';
+import 'notifications/Repositories/notification_api.dart';
+import 'shared/Views/theam.dart';
 import 'auth/Repositories/user_api.dart';
-import 'auth/Repositories/usersLocal.dart';
 import 'auth/Views/LoginPage.dart';
+import 'courses/Views/homePage.dart';
 import 'firebase_options.dart';
 import 'l10n/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'auth/models/userModel.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

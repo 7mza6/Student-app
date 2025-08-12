@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../Repositories/notification_api.dart';
-import '../../Views/homePage.dart';
-import '../../Views/main-view.dart';
+import '../../notifications/Repositories/notification_api.dart';
+import '../../layout/Views/main-view.dart';
+import '../../courses/Views/homePage.dart';
 import '../Repositories/user_api.dart';
 import '../models/userModel.dart';
 import '../Views/reusable_widgets.dart';

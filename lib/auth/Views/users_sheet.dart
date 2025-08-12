@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../Views/constants.dart';
+import '../../shared/Viewmodels/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 

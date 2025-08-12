@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Viewmodels/login_view_model.dart';
 import 'RegisterPage.dart';
 import '../../main.dart';
-import '../../Views/constants.dart';
+import '../../shared/Viewmodels/constants.dart';
 
 const Color kFormBackgroundColor = Colors.white;
 const Color kTextColor = Colors.black87;
